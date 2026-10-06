@@ -1,0 +1,103 @@
+Listed directory CrumbOS
+Listed directory backend
+Listed directory frontend
+Viewed package.json:1-32
+Viewed package.json:1-27
+Viewed AGENTS.md:1-10
+Listed directory app
+Listed directory backend
+
+Welcome to the team! As a Staff/Senior Engineer, let me tell you straight away: **this PRD is gold for Product-Based Company (PBC) interviews.** 
+
+Most candidates build generic e-commerce clones (Amazon or Flipkart clones) with static mock data, zero concurrency handling, and zero operational depth. What makes **BakeFlow** stand out to hiring managers at companies like Swiggy, Zomato, Uber, Razorpay, and Amazon is that it models a **real-world omni-channel business**:
+1. **Unified Order Engine**: One backend serving both online customers and high-speed offline POS cashiers.
+2. **Real-world edge cases**: Inventory race conditions, idempotency in payments, and state machine validation.
+3. **Multi-role operations**: Customers, Kitchen Display System (KDS), Cashier POS, and Admin.
+
+---
+
+### 1. Overcoming the "I Understand Everything, but Get Stuck When Coding" Hurdle
+
+Getting stuck when staring at a blank file is completely normal at your stage. It happens when you try to think about the **entire system at once** (UI, database, edge cases, error handling, CSS).
+
+Here is the **Senior SDE Mental Framework** you will use on this project:
+
+```
+[ Step 1: Data Contract ]   → What data comes in? What data goes out? (Zod schema)
+         ↓
+[ Step 2: Database Schema ] → What does MongoDB store? What are the indexes?
+         ↓
+[ Step 3: Pure Core Logic ] → Business rules in isolation (Service layer)
+         ↓
+[ Step 4: Transport Layer ] → Express Route / Controller + HTTP status codes
+         ↓
+[ Step 5: Frontend Hook ]   → Fetch data & connect to UI components
+```
+
+> **The Golden Rule:** Never write code until you have written the data shape (TypeScript interface or Zod schema) on paper or in a comment. Once the types are clear, the code writes itself. We will tackle every single module using this exact workflow.
+
+---
+
+### 2. SDE Suggestions to Make BakeFlow Dev-Ready & "PBC Hiring Ready"
+
+Given that you have a **shortage of time**, we must not add unnecessary bloat. Instead, we elevate the engineering depth of what is already in the PRD so you have killer talking points in system design and behavioral rounds:
+
+| Resume & Interview Hook | Why PBC Interviewers Love This | How We Implement It in BakeFlow |
+| :--- | :--- | :--- |
+| **Atomic Inventory Deduction (No Overselling)** | Demonstrates distributed systems & concurrency awareness. | Use atomic MongoDB operations (`findOneAndUpdate` with `$inc: { stock: -qty }` where `stock >= qty`) instead of naive `find` then `save`. |
+| **Strict Order Finite State Machine (FSM)** | Shows domain modeling and defense against invalid state bugs. | Explicit state transition map preventing illegal jumps (e.g., `DELIVERED` cannot become `PREPARING`). |
+| **Payment Idempotency & Webhook Verification** | Proves financial-grade backend understanding. | Razorpay HMAC signature verification with unique event tracking to prevent duplicate order confirmations. |
+| **Immutable Inventory Ledger** | Distinguishes amateur CRUD from enterprise engineering. | Every stock change produces an immutable audit record (`SALE`, `POS_SALE`, `WASTE`, `RESTOCK`, `REFUND_RESTOCK`). |
+
+---
+
+### 3. Pragmatic, Time-Optimized 5-Phase Roadmap
+
+To balance your time constraints and build an impressive full-stack portfolio piece, here is how we will stage the work:
+
+```mermaid
+flowchart LR
+    A[Phase 1: Architecture & Auth] --> B[Phase 2: Product & Inventory Engine]
+    B --> C[Phase 3: Unified Order & State Machine]
+    C --> D[Phase 4: Customer Storefront & POS UI]
+    D --> E[Phase 5: Kitchen KDS, Polish & Deploy]
+```
+
+#### **Phase 1: Architecture, DB Foundation & RBAC Auth**
+* Clean 3-tier backend architecture: `controllers/`, `services/`, `models/`, `middlewares/`, `validators/`.
+* JWT in HTTP-only cookies + Role-Based Access Control (`Customer`, `Staff`, `Kitchen`, `Admin`).
+* Fix backend setup (e.g. fixing `typescipt` typo in `backend/package.json` and structuring TypeScript config).
+
+#### **Phase 2: Product Catalog & Atomic Inventory Ledger**
+* Dynamic product creation with image uploads (Cloudinary / S3).
+* Category management, variant support (e.g., 500g vs 1kg cake).
+* Inventory ledger: atomic stock deductions and restock logs.
+
+#### **Phase 3: Core Order Engine & Payment Integration**
+* Unified order creation endpoint (handles both POS cash/UPI and online checkout).
+* Order state machine (Controlled transitions: `PLACED` → `CONFIRMED` → `PREPARING` → `PACKED` → `OUT_FOR_DELIVERY` / `READY_FOR_PICKUP` → `DELIVERED` / `PICKED_UP`).
+* Razorpay test checkout + Webhook verification.
+
+#### **Phase 4: Frontend Storefront + High-Speed Cashier POS**
+* **Customer Store**: Modern, appetizing bakery UI (menu, cart, delivery/pickup selection, live tracking timeline).
+* **Staff POS**: Ultra-fast grid view, instant product search, quantity modifiers, cash/UPI toggle, printable thermal receipt view.
+
+#### **Phase 5: Kitchen Display (KDS), Admin Analytics & Deployment**
+* Kitchen screen: realtime/polled tickets showing pending items to prepare and pack.
+* Admin dashboard: revenue, top-selling pastries, low-stock warnings.
+* Production deployment (Render/Railway for backend, Vercel for frontend, MongoDB Atlas) + interview-ready README with architecture diagrams.
+
+---
+
+### 4. Let's Begin: Immediate Next Step
+
+In your workspace, I noticed:
+1. `backend/package.json` currently has a typo (`"typescipt": "^1.0.0"` instead of `"typescript"`) and needs proper scripts (`build`, `dev` with `ts-node-dev`).
+2. We need to set up the clean, professional directory structure (`src/controllers`, `src/services`, `src/models`, `src/routes`, `src/middleware`, `src/config`).
+3. We need to define the database connection and environment configuration.
+
+Whenever you're ready, let me know if you'd like to:
+1. **Start right away with Phase 1 (Setup clean backend architecture + DB connection + Auth schema)**, or
+2. **Review the architectural design or specific schema (e.g., Order & Inventory schema) first.**
+
+How would you like to start?
